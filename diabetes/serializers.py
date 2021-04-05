@@ -1,7 +1,17 @@
-"""
-8 INPUT
-Pregnancies -> Glucose -> Blood pressure -> Skin Thickness -> Insulin -> BMI -> Diabetes Pedigree Function -> Age
+from rest_framework import serializers
 
-4 INPUT
-Glucose -> BMI -> Age -> Diabetes Pedigree Function -> Outcome
-"""
+class FourInputDiabetes(serializers.Serializer):
+    glucose = serializers.IntegerField(min_value = 0)
+    bmi = serializers.FloatField(min_value = 0)
+    dp_function = serializers.FloatField(min_value = 0)
+    age = serializers.IntegerField(min_value = 0)
+
+class EightInputDiabetes(serializers.Serializer):
+    pregnancies = serializers.IntegerField(min_value = 0)
+    glucose = serializers.IntegerField(min_value = 0)
+    bp = serializers.IntegerField(min_value = 0)
+    skin_thickness = serializers.IntegerField(min_value = 0)
+    insulin = serializers.IntegerField(min_value = 0)
+    bmi = serializers.FloatField(min_value = 0)
+    dp_function = serializers.FloatField(min_value = 0)
+    age = serializers.IntegerField(min_value = 0)
