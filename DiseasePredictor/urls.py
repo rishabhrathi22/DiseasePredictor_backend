@@ -26,10 +26,9 @@ schema_view = get_schema_view(
 register_user = views.UserViewSet.as_view({'post': 'register'})
 
 urlpatterns = [
+   path('admin/', admin.site.urls),
+   path('register/', register_user),
+   path('diabetes/', include('diabetes.urls')),
 
-    url('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-
-    path('admin/', admin.site.urls),
-    path('register/', register_user),
-    path('diabetes/', include('diabetes.urls')),
+   url('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
