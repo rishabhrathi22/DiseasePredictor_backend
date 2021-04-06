@@ -26,7 +26,7 @@ SECRET_KEY = '@c6&ejd3&so_3&8be2*e455di($h%yy93u!_56g5f71195@waj'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com', 'localhost', 'localhost:3000', 'http://localhost:3000']
+ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com', 'localhost']
 
 
 # Application definition
@@ -56,6 +56,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:3000',
+)
+
 
 ROOT_URLCONF = 'DiseasePredictor.urls'
 
