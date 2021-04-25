@@ -1,4 +1,6 @@
 import pyrebase
+import datetime
+import json
 
 config = {
     "apiKey": "AIzaSyDG9dtoC0iwj1TNB04cjUJKqM_BRg9erqU",
@@ -13,11 +15,54 @@ firebase = pyrebase.initialize_app(config)
 authe = firebase.auth()
 db = firebase.database()
 
+# function to add user to database
 def addUser(user):
     uid, email = user['uid'], user['email']
-    data = {'email': email}
-    db.child("Data").child(uid).set(data)
+    data = {'email': email, 'pastRecords': {'diabetes': False, 'pneumonia': False}}
+
+    isPresent = db.child('Data').child(uid)
+    if (isPresent.get().val() == None):
+        print("First time user")
+        db.child("Data").child(uid).set(data)
+    else:
+        print("Already registered.")
+
     return True
+
+# function to add diabetes record to database
+def addDiabatesRecord(uid, result):
+    isPresent = db.child('Data').child(uid)
+    if (isPresent.get().val() == None):
+        return False
+
+    try:
+        diabetesRecords = db.child('Data').child(uid).child('pastRecords').child('diabetes').get().val()
+        res = {
+            "RandomForestNormal": "Yes" if result["RandomForestNormal"]==1 else "No",
+            "RandomForestUnskewed": "Yes" if result["RandomForestUnskewed"]==1 else "No",
+            "KNNUnskewed": "Yes" if result["KNNUnskewed"]==1 else "No",
+            "Prediction": "have diabetes" if result["Ones"]>1 else "does not have diabetes"
+        }
+        if result.get("GBM")!=None:
+            res["GBM"] = "Yes" if result["GBM"]==1 else "No"
+            res["Prediction"] = "have diabetes" if result["Ones"]>2 else "does not have diabetes"
+
+        data = {"date": datetime.datetime.now().strftime("%d-%m-%Y"), "result": res}
+
+        # first record
+        if diabetesRecords == False:
+            db.child('Data').child(uid).child('pastRecords').child('diabetes').child(1).set(data)
+        # new records
+        else:
+            last = len(diabetesRecords)
+            db.child('Data').child(uid).child('pastRecords').child('diabetes').child(last).set(data)
+
+    except Exception as e:
+        print(e)
+
+    return True
+
+
 
 """
 # selecting the column in the database
@@ -37,7 +82,7 @@ db.child("users").child("Morty").remove()
 users = db.child("users").get()
 print(users.val()) #  retervies  this data => {"Morty": {"name": "Mortimer 'Morty' Smith"}, "Rick": {"name": "Rick Sanchez"}}
 
-# reterving data using loops
+# retrieving data using loops
 all_users = db.child("users").get()
 for user in all_users.each():
     print(user.key()) # Morty

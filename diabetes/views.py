@@ -33,35 +33,61 @@ class DiabetesViewSet(viewsets.ViewSet):
 		return self.serializer_classes.get(self.action, self.default_serializer_class)
 
 	def fourInput(self, request):
+		# get user identification number
+		uid = request.GET.get('uid', '')
+		if uid == '':
+			return Response('No UID provided.', status = status.HTTP_400_BAD_REQUEST)
+
+		# convert data to serializer
 		serializer = FourInputDiabetes(data = request.data)
+		# check if data is valid
 		if (serializer.is_valid()):
 			seq = [
-					serializer.data['glucose'],
-					serializer.data['bmi'],
-					serializer.data['dp_function'],
-					serializer.data['age']
-				]
+				serializer.data['glucose'],
+				serializer.data['bmi'],
+				serializer.data['dp_function'],
+				serializer.data['age']
+			]
 
+			# prediction according to different models
 			gbm_outcome = gbm_4ip.predict([seq])
 			rf_std_outcome = rf_std_4ip.predict([seq])
 			rf_unskewed_outcome = rf_unskewed_4ip.predict([seq])
 			knn_outcome = knn_4ip.predict([seq])
+			ones = [gbm_outcome[0], rf_std_outcome[0], rf_unskewed_outcome[0], knn_outcome[0]].count(1)
 
+			# storing as json
 			result = {
 				"GBM": gbm_outcome[0],
 				"RandomForestNormal": rf_std_outcome[0],
 				"RandomForestUnskewed": rf_unskewed_outcome[0],
-				"KNNUnskewed": knn_outcome[0]
+				"KNNUnskewed": knn_outcome[0],
+				"Ones": ones
 			}
 
-			return Response(result, status = status.HTTP_200_OK)
+			# save to database in past record
+			isDataSaved = handleDb.addDiabatesRecord(uid, result)
+
+			# return result to frontend
+			if isDataSaved:
+				return Response(result, status = status.HTTP_200_OK)
+
+			# user not registered
+			return Response("User not registered.", status = status.HTTP_401_UNAUTHORIZED)
 
 		return Response('Incomplete data', status = status.HTTP_400_BAD_REQUEST)
 
 	def eightInput(self, request):
-		serializer = EightInputDiabetes(data = request.data)
-		if (serializer.is_valid()):
+		# get user identification number
+		uid = request.GET.get('uid', '')
+		if uid == '':
+			return Response('No UID provided.', status = status.HTTP_400_BAD_REQUEST)
 
+		# convert data to serializer
+		serializer = EightInputDiabetes(data = request.data)
+
+		# check if data is valid
+		if (serializer.is_valid()):
 			seq = [
 					serializer.data['pregnancies'],
 					serializer.data['glucose'],
@@ -73,17 +99,29 @@ class DiabetesViewSet(viewsets.ViewSet):
 					serializer.data['age']
 				]
 
+			# prediction according to different models
 			rf_normal_outcome = rf_normal_8ip.predict([seq])
 			rf_unskewed_outcome = rf_unskewed_8ip.predict([seq])
 			knn_outcome = knn_8ip.predict([seq])
+			ones = [rf_normal_outcome[0], rf_unskewed_outcome[0], knn_outcome[0]].count(1)
 
+			# storing as json
 			result = {
 				"RandomForestNormal": rf_normal_outcome[0],
 				"RandomForestUnskewed": rf_unskewed_outcome[0],
-				"KNNUnskewed": knn_outcome[0]
+				"KNNUnskewed": knn_outcome[0],
+				"Ones": ones
 			}
 
-			return Response(result, status = status.HTTP_200_OK)
+			# save to database in past record
+			isDataSaved = handleDb.addDiabatesRecord(uid, result)
+
+			# return result to frontend
+			if isDataSaved:
+				return Response(result, status = status.HTTP_200_OK)
+
+			# user not registered
+			return Response("User not registered.", status = status.HTTP_401_UNAUTHORIZED)
 
 		return Response('Incomplete data', status = status.HTTP_400_BAD_REQUEST)
 
@@ -107,15 +145,3 @@ class DiabetesViewSet(viewsets.ViewSet):
 	"age": 4
 }
 """
-
-# def index(request):
-# 	return render(request,'index.html')
-
-# def predict(request):
-# 	sentence = [request.POST.get('sentence')]                   # get the sentence
-# 	# sentence_trans = cv.transform(sentence).toarray()           # transform the sentence
-# 	# prediction = model.predict(sentence_trans)[0]               # get the prediction
-# 	prediction = 1
-# 	user_input = sentence[0]
-# 	context = {'result':prediction,'sentence':user_input}
-# 	return render(request,'result.html',context)

@@ -27,6 +27,7 @@ urlpatterns = [
    path('admin/', admin.site.urls),
    path('register/', register_user),
    path('diabetes/', include('diabetes.urls')),
+   path('pneumonia/', include('pneumonia.urls')),
 
    url('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]

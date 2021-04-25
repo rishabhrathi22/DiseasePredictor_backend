@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # added manually
     'corsheaders',
     'diabetes',
+    'pneumonia',
     'rest_framework',
     'drf_yasg',
 ]
