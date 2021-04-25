@@ -66,7 +66,7 @@ class DiabetesViewSet(viewsets.ViewSet):
 			}
 
 			# save to database in past record
-			isDataSaved = handleDb.addDiabatesRecord(uid, result)
+			isDataSaved = handleDb.addDiabatesRecord(uid, serializer.data, result)
 
 			# return result to frontend
 			if isDataSaved:
@@ -89,15 +89,15 @@ class DiabetesViewSet(viewsets.ViewSet):
 		# check if data is valid
 		if (serializer.is_valid()):
 			seq = [
-					serializer.data['pregnancies'],
-					serializer.data['glucose'],
-					serializer.data['bp'],
-					serializer.data['skin_thickness'],
-					serializer.data['insulin'],
-					serializer.data['bmi'],
-					serializer.data['dp_function'],
-					serializer.data['age']
-				]
+				serializer.data['pregnancies'],
+				serializer.data['glucose'],
+				serializer.data['bp'],
+				serializer.data['skin_thickness'],
+				serializer.data['insulin'],
+				serializer.data['bmi'],
+				serializer.data['dp_function'],
+				serializer.data['age']
+			]
 
 			# prediction according to different models
 			rf_normal_outcome = rf_normal_8ip.predict([seq])
@@ -114,7 +114,7 @@ class DiabetesViewSet(viewsets.ViewSet):
 			}
 
 			# save to database in past record
-			isDataSaved = handleDb.addDiabatesRecord(uid, result)
+			isDataSaved = handleDb.addDiabatesRecord(uid, serializer.data, result)
 
 			# return result to frontend
 			if isDataSaved:

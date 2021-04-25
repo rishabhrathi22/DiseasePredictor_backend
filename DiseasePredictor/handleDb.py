@@ -30,7 +30,7 @@ def addUser(user):
     return True
 
 # function to add diabetes record to database
-def addDiabatesRecord(uid, result):
+def addDiabatesRecord(uid, inputData, result):
     isPresent = db.child('Data').child(uid)
     if (isPresent.get().val() == None):
         return False
@@ -47,7 +47,11 @@ def addDiabatesRecord(uid, result):
             res["GBM"] = "Yes" if result["GBM"]==1 else "No"
             res["Prediction"] = "have diabetes" if result["Ones"]>2 else "does not have diabetes"
 
-        data = {"date": datetime.datetime.now().strftime("%d-%m-%Y"), "result": res}
+        data = {
+            "date": datetime.datetime.now().strftime("%d-%m-%Y"),
+            "input": inputData,
+            "result": res
+        }
 
         # first record
         if diabetesRecords == False:
@@ -56,6 +60,38 @@ def addDiabatesRecord(uid, result):
         else:
             last = len(diabetesRecords)
             db.child('Data').child(uid).child('pastRecords').child('diabetes').child(last).set(data)
+
+    except Exception as e:
+        print(e)
+
+    return True
+
+# function to add pneumonia record to database
+def addPneumoniaRecord(uid, inputImage, result):
+    isPresent = db.child('Data').child(uid)
+    if (isPresent.get().val() == None):
+        return False
+
+    try:
+        pneumoniaRecords = db.child('Data').child(uid).child('pastRecords').child('pneumonia').get().val()
+        res = {
+            "Prediction": "have pneumonia" if result["Prediction"]==1 else "does not have pneumonia",
+            "Accuracy": str(result["Accuracy"])
+        }
+
+        data = {
+            "date": datetime.datetime.now().strftime("%d-%m-%Y"),
+            "input": inputImage,
+            "result": res
+        }
+
+        # first record
+        if pneumoniaRecords == False:
+            db.child('Data').child(uid).child('pastRecords').child('pneumonia').child(1).set(data)
+        # new records
+        else:
+            last = len(pneumoniaRecords)
+            db.child('Data').child(uid).child('pastRecords').child('pneumonia').child(last).set(data)
 
     except Exception as e:
         print(e)

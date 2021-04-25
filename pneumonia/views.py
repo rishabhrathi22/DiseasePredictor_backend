@@ -65,17 +65,15 @@ class PneumoniaViewSet(viewsets.ViewSet):
 				"Accuracy": accuracy
 			}
 
-			return Response(result, status = status.HTTP_200_OK)
+			# save to database in past record
+			isDataSaved = handleDb.addPneumoniaRecord(uid, base64Image, result)
 
-			# # save to database in past record
-			# isDataSaved = handleDb.addDiabatesRecord(uid, result)
+			# return result to frontend
+			if isDataSaved:
+				return Response(result, status = status.HTTP_200_OK)
 
-			# # return result to frontend
-			# if isDataSaved:
-			# 	return Response(result, status = status.HTTP_200_OK)
-
-			# # user not registered
-			# return Response("User not registered.", status = status.HTTP_401_UNAUTHORIZED)
+			# user not registered
+			return Response("User not registered.", status = status.HTTP_401_UNAUTHORIZED)
 
 		return Response('Incomplete data', status = status.HTTP_400_BAD_REQUEST)
 
