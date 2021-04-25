@@ -15,6 +15,7 @@ firebase = pyrebase.initialize_app(config)
 authe = firebase.auth()
 db = firebase.database()
 
+
 # function to add user to database
 def addUser(user):
     uid, email = user['uid'], user['email']
@@ -28,6 +29,7 @@ def addUser(user):
         print("Already registered.")
 
     return True
+
 
 # function to add diabetes record to database
 def addDiabatesRecord(uid, inputData, result):
@@ -66,6 +68,7 @@ def addDiabatesRecord(uid, inputData, result):
 
     return True
 
+
 # function to add pneumonia record to database
 def addPneumoniaRecord(uid, inputImage, result):
     isPresent = db.child('Data').child(uid)
@@ -99,6 +102,20 @@ def addPneumoniaRecord(uid, inputImage, result):
     return True
 
 
+# function to get diabetes past records
+def getDiabetesPastRecords(uid):
+    diabetesRecords = db.child('Data').child(uid).child('pastRecords').child('diabetes').get().val()
+    if diabetesRecords == False:
+        return []
+    return diabetesRecords[1:]
+
+
+# function to get pneumonia past records
+def getPneumoniaPastRecords(uid):
+    pneumoniaRecords = db.child('Data').child(uid).child('pastRecords').child('pneumonia').get().val()
+    if pneumoniaRecords == False:
+        return []
+    return pneumoniaRecords[1:]
 
 """
 # selecting the column in the database
