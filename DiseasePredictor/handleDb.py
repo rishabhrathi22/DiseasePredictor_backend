@@ -115,6 +115,13 @@ def getPneumoniaPastRecords(uid):
     pneumoniaRecords = db.child('Data').child(uid).child('pastRecords').child('pneumonia').get().val()
     if pneumoniaRecords == False:
         return []
+
+    for item in pneumoniaRecords[1:]:
+        try:
+            del item['input']
+        except:
+            pass
+
     return pneumoniaRecords[1:]
 
 """
