@@ -25,13 +25,17 @@ register_user = views.UserViewSet.as_view({'post': 'register'})
 diabetes_past_records = views.UserViewSet.as_view({'post': 'getDiabetesPastRecords'})
 pneumonia_past_records = views.UserViewSet.as_view({'post': 'getPneumoniaPastRecords'})
 single_diabetes_past_record = views.UserViewSet.as_view({'post': 'getDiabetesSinglePastRecord'})
+single_pneumonia_past_record = views.UserViewSet.as_view({'post': 'getPneumoniaSinglePastRecord'})
 
 urlpatterns = [
    path('admin/', admin.site.urls),
    path('register/', register_user),
+
    path('diabetesRecords/', diabetes_past_records),
    path('singleDiabetesRecord/', single_diabetes_past_record),
+
    path('pneumoniaRecords/', pneumonia_past_records),
+   path('singlePneumoniaRecord/', single_pneumonia_past_record),
 
    path('diabetes/', include('diabetes.urls')),
    path('pneumonia/', include('pneumonia.urls')),

@@ -107,6 +107,13 @@ def getDiabetesPastRecords(uid):
     diabetesRecords = db.child('Data').child(uid).child('pastRecords').child('diabetes').get().val()
     if diabetesRecords == False:
         return []
+
+    for item in diabetesRecords[1:]:
+        try:
+            del item['input']
+        except:
+            pass
+
     return diabetesRecords[1:]
 
 
@@ -132,6 +139,13 @@ def getSingleDiabetesPastRecord(uid, recordId):
         return []
     return diabetesRecord
 
+
+# function to get single pneumonia past record
+def getSinglePneumoniaPastRecord(uid, recordId):
+    pneumoniaRecord = db.child('Data').child(uid).child('pastRecords').child('pneumonia').child(str(recordId)).get().val()
+    if pneumoniaRecord == None:
+        return []
+    return pneumoniaRecord
 
 """
 # selecting the column in the database
