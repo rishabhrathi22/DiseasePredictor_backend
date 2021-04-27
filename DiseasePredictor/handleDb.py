@@ -124,6 +124,15 @@ def getPneumoniaPastRecords(uid):
 
     return pneumoniaRecords[1:]
 
+
+# function to get single diabetes past record
+def getSingleDiabetesPastRecord(uid, recordId):
+    diabetesRecord = db.child('Data').child(uid).child('pastRecords').child('diabetes').child(str(recordId)).get().val()
+    if diabetesRecord == None:
+        return []
+    return diabetesRecord
+
+
 """
 # selecting the column in the database
 db.child("users").child("Morty")

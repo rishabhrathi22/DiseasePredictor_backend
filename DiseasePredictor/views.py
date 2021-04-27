@@ -33,6 +33,18 @@ class UserViewSet(viewsets.ViewSet):
 
 		return Response("Incomplete data", status = status.HTTP_400_BAD_REQUEST)
 
+	def getDiabetesSinglePastRecord(self, request):
+		serializer = UIDSerializer(data=request.data)
+		recId = request.GET.get('id', '')
+		if recId == '':
+			return Response('No Record Id provided.', status = status.HTTP_400_BAD_REQUEST)
+
+		if serializer.is_valid():
+			record = handleDb.getSingleDiabetesPastRecord(serializer.data['uid'], recId)
+			return Response(record, status = status.HTTP_200_OK)
+
+		return Response("Incomplete data", status = status.HTTP_400_BAD_REQUEST)
+
 	def getPneumoniaPastRecords(self, request):
 		serializer = UIDSerializer(data=request.data)
 
