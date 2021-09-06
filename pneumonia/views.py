@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 
@@ -11,7 +10,6 @@ from DiseasePredictor import handleDb
 from .serializers import PneumoniaSerializer
 
 model = load_model("models/pneumonia/PneumoniaClassifier.h5")
-# model.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
 
 class PneumoniaViewSet(viewsets.ViewSet):
 	"""

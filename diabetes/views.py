@@ -1,8 +1,6 @@
-from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 import joblib
-import pickle
 
 from DiseasePredictor import handleDb
 from .serializers import FourInputDiabetes, EightInputDiabetes

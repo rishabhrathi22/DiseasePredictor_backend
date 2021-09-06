@@ -1,6 +1,5 @@
 import pyrebase
 import datetime
-import json
 
 config = {
     "apiKey": "AIzaSyDG9dtoC0iwj1TNB04cjUJKqM_BRg9erqU",
@@ -14,7 +13,6 @@ config = {
 firebase = pyrebase.initialize_app(config)
 authe = firebase.auth()
 db = firebase.database()
-
 
 # function to add user to database
 def addUser(user):
